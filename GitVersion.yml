@@ -1,18 +1,26 @@
 assembly-versioning-scheme: MajorMinorPatch
-mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
+mode: Mainline
 
 branches:
   
   master:
-    regex: ^(master|main)$
+    mode: ContinuousDelivery
     tag: ''
     increment: Minor
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
   develop:
     regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
     tag: ''
-    increment: patch
+    increment: Patch
     prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
   patch:
     regex: patch[/-]
     tag: useBranchName
