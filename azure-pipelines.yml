@@ -59,7 +59,7 @@ stages:
               projects: '**/*.csproj'
               restoreArguments: '/p:Configuration=$(buildConfiguration)'
               feedsToUse: 'select'
-              vstsFeed: '9b1c0a26-6848-42b7-b0ed-b49d56f97716/47b3f1d7-83ab-4aff-8a20-b139dc6f68a6'
+              vstsFeed: 'cff2a9ad-1f18-4677-a1ff-1ba023a01235/d3047bb1-10e2-412a-84f3-17a07c8e0ae8'
               includeNuGetOrg: false
               noCache: true
               verbosityRestore: 'Normal'
@@ -81,6 +81,14 @@ stages:
             displayName: 'Publish Quality Gate Result'
             inputs:
               pollingTimeoutSec: '1500'
+          - task: CopyFiles@2
+            condition: ne(variables['Build.Reason'], 'PullRequest')
+            inputs:
+              SourceFolder: ''
+              Contents: '**/*.nupkg'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+              OverWrite: true
+              flattenFolders: true
           - task: PublishBuildArtifacts@1
             condition: ne(variables['Build.Reason'], 'PullRequest')
             inputs:
