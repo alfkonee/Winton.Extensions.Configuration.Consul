@@ -4,7 +4,7 @@ mode: ContinuousDeployment
 branches:
   
   master:
-    regex: master
+    regex: ^(master|main)$
     tag: master
     increment: Minor
     prevent-increment-of-merged-branch-version: true
