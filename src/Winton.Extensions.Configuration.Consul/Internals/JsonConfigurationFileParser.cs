@@ -28,32 +28,29 @@ namespace Winton.Extensions.Configuration.Consul.Internals
         private IDictionary<string, string> ParseStream(Stream input)
         {
             _data.Clear();
-
             var jsonDocumentOptions = new JsonDocumentOptions
             {
                 CommentHandling = JsonCommentHandling.Skip,
                 AllowTrailingCommas = true,
             };
 
-            using (var reader = new StreamReader(input))
-            using (JsonDocument doc = JsonDocument.Parse(reader.ReadToEnd(), jsonDocumentOptions))
+            using var reader = new StreamReader(input);
+            using JsonDocument doc = JsonDocument.Parse(reader.ReadToEnd(), jsonDocumentOptions);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
             {
-                if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
-                {
-                    throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
-                }
+                throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
+            }
 
-                switch (doc.RootElement.ValueKind)
-                {
-                    case JsonValueKind.Object:
-                        VisitElement(doc.RootElement);
-                        break;
-                    case JsonValueKind.Array:
-                        VisitArrayElement(doc.RootElement);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            switch (doc.RootElement.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    VisitElement(doc.RootElement);
+                    break;
+                case JsonValueKind.Array:
+                    VisitArrayElement(doc.RootElement);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return _data;
@@ -133,7 +130,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
                         throw new FormatException(/*Resources.FormatError_KeyIsDuplicated(key)*/);
                     }
 
-                    _data[key ?? string.Empty] = value.ToString();
+                    _data[key ?? string.Empty] = value.ToString() ?? string.Empty;
                     break;
 
                 default:
