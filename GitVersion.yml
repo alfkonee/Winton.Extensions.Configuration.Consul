@@ -5,6 +5,7 @@ mode: Mainline
 branches:
   
   master:
+    regex: ^(master|main)$
     mode: ContinuousDelivery
     tag: ''
     increment: Minor
