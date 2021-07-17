@@ -5,13 +5,11 @@ branches:
   
   master:
     regex: ^(master|main)$
-    tag: master
     increment: Minor
     prevent-increment-of-merged-branch-version: true
-  feature:
-    regex: feature[/-]
-    tag: a{BranchName}
-    increment: Minor
+  dev:
+    regex: ^dev(elop)?(ment)?$
+    increment: patch
     prevent-increment-of-merged-branch-version: false
   patch:
     regex: patch[/-]
