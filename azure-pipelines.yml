@@ -69,12 +69,6 @@ stages:
               command: 'build'
               projects: '**/*.csproj'
               arguments: '-c $(buildConfiguration) --no-restore /p:Version=$(GitVersion.NuGetVersion)'
-          - task: UseDotNet@2
-            displayName: Use .NET Core 2 for SonarQube
-            inputs:
-              packageType: 'sdk'
-              version: '2.x'
-              performMultiLevelLookup: true
           - task: SonarQubeAnalyze@4
             displayName: 'Run Code Analysis'
           - task: SonarQubePublish@4
