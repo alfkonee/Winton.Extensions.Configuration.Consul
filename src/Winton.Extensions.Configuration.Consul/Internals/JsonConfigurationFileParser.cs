@@ -35,7 +35,8 @@ namespace Winton.Extensions.Configuration.Consul.Internals
             };
 
             using var reader = new StreamReader(input);
-            using JsonDocument doc = JsonDocument.Parse(reader.ReadToEnd(), jsonDocumentOptions);
+            var json = reader.ReadToEnd();
+            using JsonDocument doc = JsonDocument.Parse(json, jsonDocumentOptions);
             if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
             {
                 throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
@@ -124,18 +125,23 @@ namespace Winton.Extensions.Configuration.Consul.Internals
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                 case JsonValueKind.Null:
-                    var key = _currentPath;
-                    if (_data.ContainsKey(key ?? string.Empty))
-                    {
-                        throw new FormatException(/*Resources.FormatError_KeyIsDuplicated(key)*/);
-                    }
-
-                    _data[key ?? string.Empty] = value.ToString() ?? string.Empty;
+                    ProcessScalar(value);
                     break;
 
                 default:
                     throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(value.ValueKind)*/);
             }
+        }
+
+        private void ProcessScalar(JsonElement value)
+        {
+            var key = _currentPath;
+            if (_data.ContainsKey(key ?? string.Empty))
+            {
+                throw new FormatException(/*Resources.FormatError_KeyIsDuplicated(key)*/);
+            }
+
+            _data[key ?? string.Empty] = value.ToString() ?? string.Empty;
         }
 
         private void EnterContext(string context)
