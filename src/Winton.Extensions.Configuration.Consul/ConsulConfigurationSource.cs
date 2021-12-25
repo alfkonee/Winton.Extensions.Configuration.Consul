@@ -63,7 +63,7 @@ namespace Winton.Extensions.Configuration.Consul
 
         private IEnumerable<KeyValuePair<string, string>> DefaultConvertConsulKVPairToConfigStrategy(KVPair consulKvPair)
         {
-            return consulKvPair.ConvertToConfig(this.KeyToRemove, this.Parser);
+            return consulKvPair.ConvertToConfig(KeyToRemove, Parser);
         }
     }
 }
