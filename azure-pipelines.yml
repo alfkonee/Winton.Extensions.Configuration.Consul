@@ -57,7 +57,7 @@ stages:
             displayName: 'Nuget Restore App'
             inputs:
               command: 'restore'
-              projects: '**/*.csproj'
+              projects: 'src/**/*.csproj'
               restoreArguments: '/p:Configuration=$(buildConfiguration)'
               feedsToUse: 'select'
               vstsFeed: 'acsint'
@@ -67,7 +67,7 @@ stages:
             displayName: 'Build App'
             inputs:
               command: 'build'
-              projects: '**/*.csproj'
+              projects: 'src/**/*.csproj'
               arguments: '-c $(buildConfiguration) --no-restore /p:Version=$(GitVersion.NuGetVersion)'
           - task: SonarQubeAnalyze@4
             displayName: 'Run Code Analysis'
