@@ -60,8 +60,7 @@ stages:
               projects: '**/*.csproj'
               restoreArguments: '/p:Configuration=$(buildConfiguration)'
               feedsToUse: 'select'
-              vstsFeed: 'cff2a9ad-1f18-4677-a1ff-1ba023a01235/d3047bb1-10e2-412a-84f3-17a07c8e0ae8'
-              includeNuGetOrg: false
+              vstsFeed: 'acsint'
               noCache: true
               verbosityRestore: 'Normal'
           - task: DotNetCoreCLI@2
@@ -77,7 +76,7 @@ stages:
             inputs:
               pollingTimeoutSec: '1500'
           - task: CopyFiles@2
-            condition: ne(variables['Build.Reason'], 'PullRequest')
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             inputs:
               SourceFolder: ''
               Contents: '**/*.nupkg'
@@ -85,13 +84,13 @@ stages:
               OverWrite: true
               flattenFolders: true
           - task: PublishBuildArtifacts@1
-            condition: ne(variables['Build.Reason'], 'PullRequest')
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
               publishLocation: 'Container'
           - task: GitTag@6
-            condition: ne(variables['Build.Reason'], 'PullRequest')
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             inputs:
               workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
               tagUser: 'Alfred Neequaye'
