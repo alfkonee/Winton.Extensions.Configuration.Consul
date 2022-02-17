@@ -27,10 +27,11 @@ stages:
               jsonFile: .azpipelines/variables.json
               shouldPrefixVariables: true
               variablePrefix: 'deploy'
-          - task: UseGitVersion@5
+          - task: gitversion/setup@0
             displayName: 'GitVersion Update'
             inputs:
               versionSpec: '5.x'
+          - task: gitversion/execute@0
           - task: UseDotNet@2
             condition: ne(variables['Build.Reason'], 'PullRequest')
             displayName: Use .NET From Global for Project Build
