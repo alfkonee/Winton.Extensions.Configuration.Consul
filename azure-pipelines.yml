@@ -27,11 +27,6 @@ stages:
               jsonFile: .azpipelines/variables.json
               shouldPrefixVariables: true
               variablePrefix: 'deploy'
-          - task: gitversion/setup@0
-            displayName: 'GitVersion Update'
-            inputs:
-              versionSpec: '5.x'
-          - task: gitversion/execute@0
           - task: UseDotNet@2
             condition: ne(variables['Build.Reason'], 'PullRequest')
             displayName: Use .NET From Global for Project Build
@@ -39,6 +34,11 @@ stages:
               packageType: 'sdk'
               useGlobalJson: true
               performMultiLevelLookup: true
+          - task: gitversion/setup@0
+            displayName: 'GitVersion Update'
+            inputs:
+              versionSpec: '5.x'
+          - task: gitversion/execute@0
           - task: SonarQubePrepare@4
             displayName: Prep Work For SonarQube
             inputs:
