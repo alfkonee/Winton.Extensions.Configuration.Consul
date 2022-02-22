@@ -2,8 +2,7 @@ assembly-versioning-scheme: MajorMinorPatch
 continuous-delivery-fallback-tag: ''
 mode: Mainline
 
-branches:
-  
+branches:  
   master:
     regex: ^(master|main)$
     mode: ContinuousDelivery
