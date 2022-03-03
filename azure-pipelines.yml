@@ -35,10 +35,11 @@ stages:
               useGlobalJson: true
               performMultiLevelLookup: true
           - task: gitversion/setup@0
-            displayName: 'GitVersion Update'
+            displayName: 'GitVersion Setup'
             inputs:
               versionSpec: '5.x'
           - task: gitversion/execute@0
+            displayName: 'GitVersion Update'
           - task: SonarQubePrepare@4
             displayName: Prep Work For SonarQube
             inputs:
