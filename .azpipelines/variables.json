@@ -1,4 +1,4 @@
 {
-  "ServiceName": "wintonConsul",
-  "ServiceDescription": "ACS Winton Consul Consul Provider"
+  "ServiceName": "acsConsulConfigProvider",
+  "ServiceDescription": "ACS Consul Configuration Provider"
 }

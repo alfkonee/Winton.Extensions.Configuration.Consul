@@ -28,17 +28,17 @@ stages:
               shouldPrefixVariables: true
               variablePrefix: 'deploy'
           - task: UseDotNet@2
-            condition: ne(variables['Build.Reason'], 'PullRequest')
             displayName: Use .NET From Global for Project Build
             inputs:
               packageType: 'sdk'
               useGlobalJson: true
               performMultiLevelLookup: true
           - task: gitversion/setup@0
-            displayName: 'GitVersion Update'
+            displayName: 'GitVersion Setup'
             inputs:
               versionSpec: '5.x'
           - task: gitversion/execute@0
+            displayName: 'GitVersion Update'
           - task: SonarQubePrepare@4
             displayName: Prep Work For SonarQube
             inputs:
@@ -92,10 +92,10 @@ stages:
           - task: GitTag@6
             condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             inputs:
-              workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
+              workingdir: '$(System.DefaultWorkingDirectory)'
               tagUser: 'Alfred Neequaye'
               tagEmail: 'aneequaye@acsghana.com'
               tag: 'v$(GitVersion.NuGetVersion)'
               forceTagCreation: true
             env:
-              SYSTEM_ACCESSTOKEN: $(system.accesstoken)
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
