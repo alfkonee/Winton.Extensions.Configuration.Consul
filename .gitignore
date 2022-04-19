@@ -253,3 +253,6 @@ paket-files/
 
 .vscode
 .build
+
+#SonarQube Analysis Files
+.sonarqube
