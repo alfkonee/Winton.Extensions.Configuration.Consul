@@ -41,7 +41,7 @@ namespace Winton.Extensions.Configuration.Consul
             set => _keyToRemove = value;
         }
 
-        public Func<KVPair, IEnumerable<KeyValuePair<string, string>>> ConvertConsulKVPairToConfig { get; set; }
+        public Func<KVPair, IDictionary<string, string?>> ConvertConsulKVPairToConfig { get; set; }
 
         public Action<ConsulLoadExceptionContext>? OnLoadException { get; set; }
 
@@ -61,7 +61,7 @@ namespace Winton.Extensions.Configuration.Consul
             return new ConsulConfigurationProvider(this, consulClientFactory);
         }
 
-        private IEnumerable<KeyValuePair<string, string>> DefaultConvertConsulKVPairToConfigStrategy(KVPair consulKvPair)
+        private IDictionary<string, string?> DefaultConvertConsulKVPairToConfigStrategy(KVPair consulKvPair)
         {
             return consulKvPair.ConvertToConfig(KeyToRemove, Parser);
         }

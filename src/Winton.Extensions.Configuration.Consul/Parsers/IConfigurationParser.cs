@@ -16,6 +16,6 @@ namespace Winton.Extensions.Configuration.Consul.Parsers
         /// </summary>
         /// <param name="stream">The stream to parse.</param>
         /// <returns>A dictionary representing the configuration in a flattened form.</returns>
-        IDictionary<string, string> Parse(Stream stream);
+        Dictionary<string, string?> Parse(Stream stream);
     }
 }

@@ -11,7 +11,7 @@ namespace Winton.Extensions.Configuration.Consul.Extensions
 {
     internal static class KVPairExtensions
     {
-        internal static IEnumerable<KeyValuePair<string, string>> ConvertToConfig(
+        internal static IDictionary<string, string?> ConvertToConfig(
             this KVPair kvPair,
             string keyToRemove,
             IConfigurationParser parser)
@@ -19,7 +19,7 @@ namespace Winton.Extensions.Configuration.Consul.Extensions
             using Stream stream = new MemoryStream(kvPair.Value);
             return parser
                 .Parse(stream)
-                .Select(
+                .ToDictionary(
                     pair =>
                     {
                         var prefix = kvPair.Key
@@ -35,8 +35,9 @@ namespace Winton.Extensions.Configuration.Consul.Extensions
                                 "The key must not be null or empty. Ensure that there is at least one key under the root of the config or that the data there contains more than just a single value.");
                         }
 
-                        return new KeyValuePair<string, string>(key, pair.Value);
-                    });
+                        return key;
+                    },
+                    pair => pair.Value);
         }
 
         internal static bool HasValue(this KVPair kvPair)

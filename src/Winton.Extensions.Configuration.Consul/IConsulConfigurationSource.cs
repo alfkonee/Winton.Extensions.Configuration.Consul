@@ -35,7 +35,7 @@ namespace Winton.Extensions.Configuration.Consul
         ///     there are some requirements on the final format of
         ///     <see href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1#configuration-keys-and-values">Configuration Keys and Values</see>.
         /// </remarks>
-        Func<KVPair, IEnumerable<KeyValuePair<string, string>>> ConvertConsulKVPairToConfig { get; set; }
+        Func<KVPair, IDictionary<string, string?>> ConvertConsulKVPairToConfig { get; set; }
 
         /// <summary>
         ///     Gets or sets an <see cref="Action" /> to be applied to the <see cref="HttpClientHandler" />

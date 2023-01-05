@@ -16,7 +16,7 @@ namespace Winton.Extensions.Configuration.Consul.Parsers
     public sealed class JsonConfigurationParser : IConfigurationParser
     {
         /// <inheritdoc />
-        public IDictionary<string, string> Parse(Stream stream)
+        public Dictionary<string, string?> Parse(Stream stream)
         {
             return new ConfigurationBuilder()
                 .AddJsonArrayStream(stream)

@@ -19,9 +19,9 @@ namespace Winton.Extensions.Configuration.Consul.Extensions
                    && result.Response.Any(kvp => kvp.HasValue());
         }
 
-        internal static Dictionary<string, string> ToConfigDictionary(
+        internal static Dictionary<string, string?> ToConfigDictionary(
             this QueryResult<KVPair[]> result,
-            Func<KVPair, IEnumerable<KeyValuePair<string, string>>> convertConsulKVPairToConfig)
+            Func<KVPair, IDictionary<string, string?>> convertConsulKVPairToConfig)
         {
             return (result.Response ?? new KVPair[0])
                 .Where(kvp => kvp.HasValue())

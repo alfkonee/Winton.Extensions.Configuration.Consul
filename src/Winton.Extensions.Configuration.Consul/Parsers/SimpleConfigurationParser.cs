@@ -13,10 +13,10 @@ namespace Winton.Extensions.Configuration.Consul.Parsers
     public sealed class SimpleConfigurationParser : IConfigurationParser
     {
         /// <inheritdoc />
-        public IDictionary<string, string> Parse(Stream stream)
+        public Dictionary<string, string?> Parse(Stream stream)
         {
             using var streamReader = new StreamReader(stream);
-            return new Dictionary<string, string> { { string.Empty, streamReader.ReadToEnd() } };
+            return new Dictionary<string, string?> { { string.Empty, streamReader.ReadToEnd() } };
         }
     }
 }
