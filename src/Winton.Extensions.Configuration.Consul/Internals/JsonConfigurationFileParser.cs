@@ -41,7 +41,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
       using JsonDocument doc = JsonDocument.Parse(json, jsonDocumentOptions);
       if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
       {
-        throw new FormatException( /*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
+        throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
       }
 
       switch (doc.RootElement.ValueKind)
@@ -131,7 +131,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
           break;
 
         default:
-          throw new FormatException( /*Resources.FormatError_UnsupportedJSONToken(value.ValueKind)*/);
+          throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(value.ValueKind)*/);
       }
     }
 
@@ -140,7 +140,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
       var key = _currentPath;
       if (_data.ContainsKey(key ?? string.Empty))
       {
-        throw new FormatException( /*Resources.FormatError_KeyIsDuplicated(key)*/);
+        throw new FormatException(/*Resources.FormatError_KeyIsDuplicated(key)*/);
       }
 
       _data[key ?? string.Empty] = value.ToString() ?? string.Empty;
