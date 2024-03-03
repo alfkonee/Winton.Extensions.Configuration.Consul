@@ -6,17 +6,17 @@ using Microsoft.Extensions.Configuration.Json;
 
 namespace Winton.Extensions.Configuration.Consul.Internals
 {
+  /// <summary>
+  ///     Json Array Variant of Config Provider.
+  /// </summary>
+  public class JsonArrayStreamConfigurationSource : StreamConfigurationSource
+  {
     /// <summary>
-    ///     Json Array Variant of Config Provider.
+    /// Builds the <see cref="JsonStreamConfigurationProvider"/> for this source.
     /// </summary>
-    public class JsonArrayStreamConfigurationSource : StreamConfigurationSource
-    {
-        /// <summary>
-        /// Builds the <see cref="JsonStreamConfigurationProvider"/> for this source.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>An <see cref="JsonStreamConfigurationProvider"/>.</returns>
-        public override IConfigurationProvider Build(IConfigurationBuilder builder)
-            => new JsonArrayStreamConfigurationProvider(this);
-    }
+    /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
+    /// <returns>An <see cref="JsonStreamConfigurationProvider"/>.</returns>
+    public override IConfigurationProvider Build(IConfigurationBuilder builder)
+      => new JsonArrayStreamConfigurationProvider(this);
+  }
 }

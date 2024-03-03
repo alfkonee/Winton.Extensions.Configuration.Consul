@@ -6,21 +6,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Winton.Extensions.Configuration.Consul.Internals
 {
-    internal sealed class JsonArrayStreamConfigurationProvider : StreamConfigurationProvider
+  internal sealed class JsonArrayStreamConfigurationProvider : StreamConfigurationProvider
+  {
+    public JsonArrayStreamConfigurationProvider(JsonArrayStreamConfigurationSource source)
+      : base(source)
     {
-        public JsonArrayStreamConfigurationProvider(JsonArrayStreamConfigurationSource source)
-            : base(source)
-        {
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Loads json configuration key/values from a stream into a provider.
-        /// </summary>
-        /// <param name="stream">The json <see cref="Stream"/> to load configuration data from.</param>
-        public override void Load(Stream stream)
-        {
-            Data = JsonConfigurationFileParser.Parse(stream);
-        }
     }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Loads json configuration key/values from a stream into a provider.
+    /// </summary>
+    /// <param name="stream">The json <see cref="Stream"/> to load configuration data from.</param>
+    public override void Load(Stream stream)
+    {
+      Data = JsonConfigurationFileParser.Parse(stream);
+    }
+  }
 }

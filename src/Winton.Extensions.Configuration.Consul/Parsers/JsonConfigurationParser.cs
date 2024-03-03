@@ -9,20 +9,20 @@ using Winton.Extensions.Configuration.Consul.Extensions;
 
 namespace Winton.Extensions.Configuration.Consul.Parsers
 {
+  /// <inheritdoc />
+  /// <summary>
+  ///     Implementation of <see cref="IConfigurationParser" /> for parsing JSON Configuration.
+  /// </summary>
+  public sealed class JsonConfigurationParser : IConfigurationParser
+  {
     /// <inheritdoc />
-    /// <summary>
-    ///     Implementation of <see cref="IConfigurationParser" /> for parsing JSON Configuration.
-    /// </summary>
-    public sealed class JsonConfigurationParser : IConfigurationParser
+    public Dictionary<string, string?> Parse(Stream stream)
     {
-        /// <inheritdoc />
-        public Dictionary<string, string?> Parse(Stream stream)
-        {
-            return new ConfigurationBuilder()
-                .AddJsonArrayStream(stream)
-                .Build()
-                .AsEnumerable()
-                .ToDictionary(pair => pair.Key, pair => pair.Value);
-        }
+      return new ConfigurationBuilder()
+        .AddJsonArrayStream(stream)
+        .Build()
+        .AsEnumerable()
+        .ToDictionary(pair => pair.Key, pair => pair.Value);
     }
+  }
 }

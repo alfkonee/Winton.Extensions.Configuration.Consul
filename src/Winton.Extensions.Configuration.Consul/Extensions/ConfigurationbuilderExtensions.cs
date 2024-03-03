@@ -8,25 +8,25 @@ using Winton.Extensions.Configuration.Consul.Internals;
 
 namespace Winton.Extensions.Configuration.Consul.Extensions
 {
+  /// <summary>
+  /// Extra Extesntions for Json Array Parsing.
+  /// </summary>
+  public static class ConfigurationbuilderExtensions
+  {
     /// <summary>
-    /// Extra Extesntions for Json Array Parsing.
+    /// Adds a JSON Array configuration source to <paramref name="builder"/>.
     /// </summary>
-    public static class ConfigurationbuilderExtensions
+    /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+    /// <param name="stream">The <see cref="Stream"/> to read the json configuration data from.</param>
+    /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+    public static IConfigurationBuilder AddJsonArrayStream(this IConfigurationBuilder builder, Stream stream)
     {
-        /// <summary>
-        /// Adds a JSON Array configuration source to <paramref name="builder"/>.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="stream">The <see cref="Stream"/> to read the json configuration data from.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddJsonArrayStream(this IConfigurationBuilder builder, Stream stream)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+      if (builder == null)
+      {
+        throw new ArgumentNullException(nameof(builder));
+      }
 
-            return builder.Add<JsonArrayStreamConfigurationSource>(s => s.Stream = stream);
-        }
+      return builder.Add<JsonArrayStreamConfigurationSource>(s => s.Stream = stream);
     }
+  }
 }

@@ -11,59 +11,59 @@ using Winton.Extensions.Configuration.Consul.Parsers;
 
 namespace Winton.Extensions.Configuration.Consul
 {
-    internal sealed class ConsulConfigurationSource : IConsulConfigurationSource
+  internal sealed class ConsulConfigurationSource : IConsulConfigurationSource
+  {
+    private string? _keyToRemove;
+
+    public ConsulConfigurationSource(string key)
     {
-        private string? _keyToRemove;
+      if (string.IsNullOrWhiteSpace(key))
+      {
+        throw new ArgumentNullException(nameof(key));
+      }
 
-        public ConsulConfigurationSource(string key)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            Key = key;
-            Parser = new JsonConfigurationParser();
-            ConvertConsulKVPairToConfig = DefaultConvertConsulKVPairToConfigStrategy;
-        }
-
-        public Action<ConsulClientConfiguration>? ConsulConfigurationOptions { get; set; }
-
-        public Action<HttpClientHandler>? ConsulHttpClientHandlerOptions { get; set; }
-
-        public Action<HttpClient>? ConsulHttpClientOptions { get; set; }
-
-        public string Key { get; }
-
-        public string KeyToRemove
-        {
-            get => _keyToRemove ?? Key;
-            set => _keyToRemove = value;
-        }
-
-        public Func<KVPair, IDictionary<string, string?>> ConvertConsulKVPairToConfig { get; set; }
-
-        public Action<ConsulLoadExceptionContext>? OnLoadException { get; set; }
-
-        public Func<ConsulWatchExceptionContext, TimeSpan>? OnWatchException { get; set; }
-
-        public bool Optional { get; set; } = false;
-
-        public IConfigurationParser Parser { get; set; }
-
-        public TimeSpan PollWaitTime { get; set; } = TimeSpan.FromMinutes(5);
-
-        public bool ReloadOnChange { get; set; } = false;
-
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            var consulClientFactory = new ConsulClientFactory(this);
-            return new ConsulConfigurationProvider(this, consulClientFactory);
-        }
-
-        private IDictionary<string, string?> DefaultConvertConsulKVPairToConfigStrategy(KVPair consulKvPair)
-        {
-            return consulKvPair.ConvertToConfig(KeyToRemove, Parser);
-        }
+      Key = key;
+      Parser = new JsonConfigurationParser();
+      ConvertConsulKVPairToConfig = DefaultConvertConsulKVPairToConfigStrategy;
     }
+
+    public Action<ConsulClientConfiguration>? ConsulConfigurationOptions { get; set; }
+
+    public Action<HttpClientHandler>? ConsulHttpClientHandlerOptions { get; set; }
+
+    public Action<HttpClient>? ConsulHttpClientOptions { get; set; }
+
+    public string Key { get; }
+
+    public string KeyToRemove
+    {
+      get => _keyToRemove ?? Key;
+      set => _keyToRemove = value;
+    }
+
+    public Func<KVPair, IDictionary<string, string?>> ConvertConsulKVPairToConfig { get; set; }
+
+    public Action<ConsulLoadExceptionContext>? OnLoadException { get; set; }
+
+    public Func<ConsulWatchExceptionContext, TimeSpan>? OnWatchException { get; set; }
+
+    public bool Optional { get; set; } = false;
+
+    public IConfigurationParser Parser { get; set; }
+
+    public TimeSpan PollWaitTime { get; set; } = TimeSpan.FromMinutes(5);
+
+    public bool ReloadOnChange { get; set; } = false;
+
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+      var consulClientFactory = new ConsulClientFactory(this);
+      return new ConsulConfigurationProvider(this, consulClientFactory);
+    }
+
+    private IDictionary<string, string?> DefaultConvertConsulKVPairToConfigStrategy(KVPair consulKvPair)
+    {
+      return consulKvPair.ConvertToConfig(KeyToRemove, Parser);
+    }
+  }
 }
