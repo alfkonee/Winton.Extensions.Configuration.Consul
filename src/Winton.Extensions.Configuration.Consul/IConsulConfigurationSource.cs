@@ -70,16 +70,26 @@ namespace Winton.Extensions.Configuration.Consul
     /// </summary>
     Action<ConsulLoadExceptionContext>? OnLoadException { get; set; }
 
-    /// <summary>
-    ///     Gets or sets a <see cref="Func{ConsulWatchException, TimeSpan}" /> that is invoked when an exception is raised
-    ///     whilst watching.
-    ///     The <see cref="TimeSpan" /> returned by the function is waited before trying again.
-    /// </summary>
-    /// <remarks>
-    ///     This function is useful for implementing back-off strategies.
-    ///     It also provides access to the <see cref="CancellationToken" /> which can be used to cancel the watch task.
-    /// </remarks>
-    Func<ConsulWatchExceptionContext, TimeSpan>? OnWatchException { get; set; }
+        /// <summary>
+        ///     Gets or sets a <see cref="Func{ConsulWatchException, TimeSpan}" /> that is invoked when an exception is raised
+        ///     whilst watching.
+        ///     The <see cref="TimeSpan" /> returned by the function is waited before trying again.
+        /// </summary>
+        /// <remarks>
+        ///     This function is useful for implementing back-off strategies.
+        ///     It also provides access to the <see cref="CancellationToken" /> which can be used to cancel the watch task.
+        /// </remarks>
+        Func<ConsulWatchExceptionContext, TimeSpan>? OnWatchException { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a <see cref="CancellationTokenSource" /> which can be used to cancel the background task that watches Consul for changes to this config.
+        /// </summary>
+        /// <remarks>
+        ///    Cancelling the watch task by calling <c>Cancel()</c> on this <c>CancellationTokenSource</c> will completely terminate the watching process and it is not possible to restart it after this.
+        ///    By default this configuration provider will terminate the watch task itself when the <c>ConsulConfigurationProvider</c> is disposed.
+        ///    This functionality is only useful if you need to terminate the watch task early in response to some other event or want explicit control over when it is cancelled for some other reasons.
+        /// </remarks>
+        CancellationTokenSource? WatchCancellationTokenSource { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the config is optional.
