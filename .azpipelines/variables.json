@@ -1,4 +1,4 @@
 {
-  "ServiceName": "acsConsulConfigProvider",
-  "ServiceDescription": "ACS Consul Configuration Provider"
+  "ServiceName": "tech231ConsulConfigProvider",
+  "ServiceDescription": "Tech231 Consul Configuration Provider"
 }

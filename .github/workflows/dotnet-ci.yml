@@ -1,0 +1,76 @@
+name: .NET CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+  workflow_dispatch: # Allows manual triggering
+
+env:
+  BUILD_CONFIGURATION: Release
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build-and-validate:
+    name: Build, Validate, and Publish
+    runs-on: ubuntu-latest # Change if 'LCC' was a self-hosted runner pool
+    permissions:
+      contents: write # For git tag and push
+      packages: write # For publishing to GitHub Packages
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for GitVersion to determine the version accurately
+          persist-credentials: true # Needed for git push operations
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json # Remove if no global.json or specify path
+
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v1.1.1
+
+      - name: Restore NuGet packages
+        run: dotnet restore src/**/*.csproj --configuration ${{ env.BUILD_CONFIGURATION }}
+
+      - name: Build project
+        run: dotnet build src/**/*.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore /p:Version=${{ steps.gitversion.outputs.nuGetVersion }}
+
+      - name: Create NuGet Package
+        run: dotnet pack src/**/*.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-build /p:Version=${{ steps.gitversion.outputs.nuGetVersion }} -o ./packages
+
+      - name: Upload NuGet Package Artifact
+        if: success() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./packages/**/*.nupkg
+
+      - name: Publish to GitHub Packages
+        if: success() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev')
+        run: |
+          dotnet nuget push "./packages/**/*.nupkg" \
+            --api-key "${{ secrets.GITHUB_TOKEN }}" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}" \
+            --skip-duplicate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Git Tag
+        if: success() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev')
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git tag v${{ steps.gitversion.outputs.nuGetVersion }}
+          git push origin v${{ steps.gitversion.outputs.nuGetVersion }}
