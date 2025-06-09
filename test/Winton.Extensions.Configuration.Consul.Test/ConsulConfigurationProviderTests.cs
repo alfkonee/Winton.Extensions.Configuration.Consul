@@ -751,12 +751,9 @@ namespace Winton.Extensions.Configuration.Consul
 
                     using Stream valueStream = new MemoryStream(kvPair.Value);
                     var parsedPairs = _source.Parser.Parse(valueStream);
-                    return parsedPairs.Select(parsedPair =>
-                    {
-                        return new KeyValuePair<string, string>(
-                                                $"{normalizedKey}/{parsedPair.Key}".Trim('/'),
-                                                parsedPair.Value);
-                    });
+                    return parsedPairs.Select(parsedPair => new KeyValuePair<string, string>(
+                        $"{normalizedKey}/{parsedPair.Key}".Trim('/'),
+                        parsedPair.Value)).ToDictionary(pair => pair.Key, pair => pair.Value);
                 };
 
                 _provider.Load();
