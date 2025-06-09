@@ -15,7 +15,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
 
     /// <inheritdoc />
     /// <summary>
-    ///     Loads json configuration key/values from a stream into a provider.
+    ///     Loads JSON configuration key/values from a stream into a provider.
     /// </summary>
     /// <param name="stream">The json <see cref="Stream"/> to load configuration data from.</param>
     public override void Load(Stream stream)

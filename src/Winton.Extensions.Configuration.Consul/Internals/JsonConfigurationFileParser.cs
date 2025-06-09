@@ -38,7 +38,7 @@ namespace Winton.Extensions.Configuration.Consul.Internals
 
       using var reader = new StreamReader(input);
       var json = reader.ReadToEnd();
-      using JsonDocument doc = JsonDocument.Parse(json, jsonDocumentOptions);
+      using var doc = JsonDocument.Parse(json, jsonDocumentOptions);
       if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
       {
         throw new FormatException(/*Resources.FormatError_UnsupportedJSONToken(doc.RootElement.ValueKind)*/);
