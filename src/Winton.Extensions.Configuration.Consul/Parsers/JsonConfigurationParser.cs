@@ -7,12 +7,13 @@ using Microsoft.Extensions.Configuration.Json;
 
 namespace Winton.Extensions.Configuration.Consul.Parsers
 {
-    /// <inheritdoc />
-    /// <summary>
-    ///     Implementation of <see cref="IConfigurationParser" /> for parsing JSON Configuration.
-    /// </summary>
-    public sealed class JsonConfigurationParser : IConfigurationParser
-    {
+  /// <inheritdoc />
+  /// <summary>
+  ///     Implementation of <see cref="IConfigurationParser" /> for parsing JSON Configuration.
+  /// </summary>
+  public sealed class JsonConfigurationParser : IConfigurationParser
+  {
+
         /// <summary>
         /// Parse the <see cref="Stream" /> into a dictionary.
         /// </summary>
@@ -37,5 +38,6 @@ namespace Winton.Extensions.Configuration.Consul.Parsers
                 return provider.Data;
             }
         }
-    }
+    
+  }
 }

@@ -1,18 +1,26 @@
 assembly-versioning-scheme: MajorMinorPatch
-mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
+mode: Mainline
 
-branches:
-  
+branches:  
   master:
-    regex: master
-    tag: master
+    regex: ^(master|main)$
+    mode: ContinuousDelivery
+    tag: ''
     increment: Minor
     prevent-increment-of-merged-branch-version: true
-  feature:
-    regex: feature[/-]
-    tag: a{BranchName}
-    increment: Minor
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: ''
+    increment: Patch
     prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
   patch:
     regex: patch[/-]
     tag: useBranchName
@@ -24,3 +32,13 @@ branches:
     tag: rc
     increment: None
     prevent-increment-of-merged-branch-version: false
+  pull-request:
+    regex: ^(pull|pull\-requests|pr)[/-]
+    mode: ContinuousDelivery
+    tag: pr
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false

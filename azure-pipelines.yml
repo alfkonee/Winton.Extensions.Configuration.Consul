@@ -1,0 +1,101 @@
+name: $(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - dev
+
+pool: 'LCC'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+  - stage: DataBuild
+    displayName: Build and Validation
+    jobs: 
+      - job: BuildValidate
+        displayName: Build and Analyze
+        steps:
+          - checkout: self
+            clean: true
+            persistCredentials: true
+          - task: oneLuckiDevJson2Variable@1
+            displayName: Parse JsonConfig
+            inputs:
+              jsonFile: .azpipelines/variables.json
+              shouldPrefixVariables: true
+              variablePrefix: 'deploy'
+          - task: UseDotNet@2
+            displayName: Use .NET From Global for Project Build
+            inputs:
+              packageType: 'sdk'
+              useGlobalJson: true
+              performMultiLevelLookup: true
+          - task: gitversion/setup@0
+            displayName: 'GitVersion Setup'
+            inputs:
+              versionSpec: '5.x'
+          - task: gitversion/execute@0
+            displayName: 'GitVersion Update'
+          - task: SonarQubePrepare@4
+            displayName: Prep Work For SonarQube
+            inputs:
+              SonarQube: 'ACS SonarQube'
+              scannerMode: 'MSBuild'
+              projectKey: $(deploy.ServiceName)
+              projectName: $(deploy.ServiceDescription)
+              projectVersion: $(GitVersion.SemVer)
+              extraProperties: |
+                sonar.dependencyCheck.reportPath=$(Build.SourcesDirectory)/dependency-check-report.xml     
+                sonar.dependencyCheck.htmlReportPath=$(Build.SourcesDirectory)/dependency-check-report.html
+                sonar.cpd.exclusions=**/AssemblyInfo.cs,**/*.g.cs
+                sonar.cs.vscoveragexml.reportsPaths=$(System.DefaultWorkingDirectory)/**/*.coveragexml
+                sonar.cs.vstest.reportsPaths=$(System.DefaultWorkingDirectory)/**/*.trx
+          - task: DotNetCoreCLI@2
+            displayName: 'Nuget Restore App'
+            inputs:
+              command: 'restore'
+              projects: 'src/**/*.csproj'
+              restoreArguments: '/p:Configuration=$(buildConfiguration)'
+              feedsToUse: 'select'
+              vstsFeed: 'acsint'
+              noCache: true
+              verbosityRestore: 'Normal'
+          - task: DotNetCoreCLI@2
+            displayName: 'Build App'
+            inputs:
+              command: 'build'
+              projects: 'src/**/*.csproj'
+              arguments: '-c $(buildConfiguration) --no-restore /p:Version=$(GitVersion.NuGetVersion)'
+          - task: SonarQubeAnalyze@4
+            displayName: 'Run Code Analysis'
+          - task: SonarQubePublish@4
+            displayName: 'Publish Quality Gate Result'
+            inputs:
+              pollingTimeoutSec: '1500'
+          - task: CopyFiles@2
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            inputs:
+              SourceFolder: ''
+              Contents: '**/*.nupkg'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+              OverWrite: true
+              flattenFolders: true
+          - task: PublishBuildArtifacts@1
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+          - task: GitTag@6
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            inputs:
+              workingdir: '$(System.DefaultWorkingDirectory)'
+              tagUser: 'Alfred Neequaye'
+              tagEmail: 'aneequaye@acsghana.com'
+              tag: 'v$(GitVersion.NuGetVersion)'
+              forceTagCreation: true
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)

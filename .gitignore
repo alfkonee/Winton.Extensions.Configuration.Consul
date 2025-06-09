@@ -254,3 +254,6 @@ paket-files/
 .vscode
 .build
 .DS_Store
+
+#SonarQube Analysis Files
+.sonarqube
