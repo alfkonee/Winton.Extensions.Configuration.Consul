@@ -42,7 +42,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v1.1.1
 
       - name: Restore NuGet packages
-        run: dotnet restore src/**/*.csproj --configuration ${{ env.BUILD_CONFIGURATION }}
+        run: dotnet restore src/**/*.csproj
 
       - name: Build project
         run: dotnet build src/**/*.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore /p:Version=${{ steps.gitversion.outputs.nuGetVersion }}
