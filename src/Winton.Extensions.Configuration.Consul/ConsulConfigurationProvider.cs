@@ -104,6 +104,11 @@ namespace Winton.Extensions.Configuration.Consul
             catch (Exception exception)
             {
                 var exceptionContext = new ConsulLoadExceptionContext(_source, exception);
+                if (exception.Data["ConsulKvKey"] is string kvKey)
+                {
+                    exceptionContext.KvKey = kvKey;
+                }
+
                 _source.OnLoadException?.Invoke(exceptionContext);
                 if (!exceptionContext.Ignore)
                 {

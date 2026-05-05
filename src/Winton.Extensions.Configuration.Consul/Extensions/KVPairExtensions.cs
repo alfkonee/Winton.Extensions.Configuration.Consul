@@ -1,6 +1,6 @@
 // Copyright (c) Winton. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,8 +17,30 @@ namespace Winton.Extensions.Configuration.Consul.Extensions
       IConfigurationParser parser)
     {
       using Stream stream = new MemoryStream(kvPair.Value);
-      return parser
-        .Parse(stream)
+      string configText;
+      using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8, true, 1024, true))
+      {
+        configText = reader.ReadToEnd();
+      }
+
+      stream.Position = 0;
+
+      IDictionary<string, string?> parsed;
+      try
+      {
+        parsed = parser.Parse(stream);
+      }
+      catch (Exception ex)
+      {
+        var wrapped = new InvalidOperationException(
+          $"Failed to parse JSON configuration for the Consul KV key '{kvPair.Key}'. {ex.Message}",
+          ex);
+        wrapped.Data["ConsulKvKey"] = kvPair.Key;
+        wrapped.Data["ConsulKvValue"] = configText;
+        throw wrapped;
+      }
+
+      return parsed
         .ToDictionary(
           pair =>
           {

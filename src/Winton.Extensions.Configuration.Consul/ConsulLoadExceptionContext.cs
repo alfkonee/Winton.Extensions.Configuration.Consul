@@ -29,6 +29,11 @@ namespace Winton.Extensions.Configuration.Consul
     public bool Ignore { get; set; }
 
     /// <summary>
+    ///     Gets the Consul KV key that was being parsed when the exception occurred, if known.
+    /// </summary>
+    public string? KvKey { get; internal set; }
+
+    /// <summary>
     ///     Gets the <see cref="IConsulConfigurationSource" /> of the provider that caused the exception.
     /// </summary>
     public IConsulConfigurationSource Source { get; }
