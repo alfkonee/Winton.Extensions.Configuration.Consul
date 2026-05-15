@@ -247,6 +247,9 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+# Language Server Cache
+*.lscache
+
 # JetBrains Rider
 .idea/
 *.sln.iml
